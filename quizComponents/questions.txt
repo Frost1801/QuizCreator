@@ -1,2 +1,10 @@
-#this is a test
-# N 2
+~~
+#OPS=4
+~~
+#NUM=1
+#DES=this is the description
+#IMG=/home/sergio/Git Projects/quizCreator/quizComponents/Images/Image1
+~~
+#NUM=2
+#DES=second description
+#IMG=/home/sergio/Git Projects/quizCreator/quizComponents/Images/Image2
