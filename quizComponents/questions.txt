@@ -1,10 +1,11 @@
+#TLT=Quiz test
 ~~
-#OPS=4
+#DES=A man in a black robe tells you to come closer, what do you do?
+#IMG=/home/sergio/Git-Projects/quizCreator/quizComponents/Images/test.png
 ~~
-#NUM=1
-#DES=this is the description
-#IMG=/home/sergio/Git Projects/quizCreator/quizComponents/Images/Image1
+#DES=How many days are there in a week?Answer the question carefully
+#IMG=/home/sergio/Git-Projects/quizCreator/quizComponents/Images/test1.png
 ~~
-#NUM=2
-#DES=second description
-#IMG=/home/sergio/Git Projects/quizCreator/quizComponents/Images/Image2
+#DES=Gibberish?
+#IMG=/home/sergio/Git-Projects/quizCreator/quizComponents/Images/test3.png
+~~

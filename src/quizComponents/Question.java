@@ -1,9 +1,8 @@
 package quizComponents;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
-//rapresents a question in the quiz
+//represents a question in the quiz
 public class Question {
     public Question(int n, String description, String image){
         this.n = n;
@@ -18,7 +17,20 @@ public class Question {
     public void addAnswers (Answer toAdd){
         answers.add(toAdd);
     }
+    public void addOutcome (int n, Outcome toAdd){
+        answers.elementAt(n).setOutcome(toAdd);
+    }
+    public Answer getAnswer (int index){
+        return answers.elementAt(index);
+    }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImage() {
+        return image;
+    }
 
     private int n;
     private String description;

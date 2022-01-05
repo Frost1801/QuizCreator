@@ -4,6 +4,10 @@ public class Outcome {
     Outcome (){
         instances = 0;
     }
-    private String name;
+    public Outcome(String type){
+        this.type = type;
+        instances = 0;
+    }
+    private String type;
     private int instances;
 }
