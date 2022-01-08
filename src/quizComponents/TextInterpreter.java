@@ -1,9 +1,6 @@
 package quizComponents;
 
-import quizComponents.Answer;
-import quizComponents.Outcome;
-import quizComponents.Question;
-
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.io.FileReader;
@@ -13,24 +10,18 @@ import java.util.Vector;
 public class TextInterpreter {
 
     public void prepareTest (Quiz toPrepare) throws IOException {
-        Vector <String []> questionData = initializeQuestions("/home/sergio/Git-Projects/quizCreator/quizComponents/questions.txt");
-        Vector <String []> answersData = initializeQuestions("/home/sergio/Git-Projects/quizCreator/quizComponents/answers.txt");
+        Vector <String []> questionData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/questions.txt");
+        Vector <String []> answersData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/answers.txt");
+        String credits = readText("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/credits.txt");
+        toPrepare.setCredits(credits);
         createQuestions(questionData,toPrepare);
         createAnswers(answersData,toPrepare);
     }
-
-    private Vector<String []> initializeQuestions(String filePath) throws IOException{
-        //reads the text file
-        FileReader rd = new FileReader(filePath);
-        //components to fill all the file in a single string
-        int charStream;
-        StringBuilder combinedElements = new StringBuilder();
-        while ((charStream = rd.read())!= -1){ //creates a string with the characters of the file
-            combinedElements.append((char)charStream);
-        }
-
+    //reads and formats the text file to extract data more easily
+    private Vector<String []> initializeData(String filePath) throws IOException{
+       String combinedElements = readText(filePath);
         //removes spaces and newlines
-        String answersNoSpaces = combinedElements.toString().replaceAll("[\n\r]", "");
+        String answersNoSpaces = combinedElements.replaceAll("[\n\r]", "");
 
         //splits all the questions and answers
         String [] separatedComponents;
@@ -45,11 +36,22 @@ public class TextInterpreter {
         return separatedLines;
     }
 
-    //creates the answers based on the input file
+    private String readText (String filePath) throws IOException {
+        //reads the text file
+        FileReader rd = new FileReader(filePath);
+        //components to fill all the file in a single string
+        int charStream;
+        StringBuilder combinedElements = new StringBuilder();
+        while ((charStream = rd.read())!= -1){ //creates a string with the characters of the file
+            combinedElements.append((char)charStream);
+        }
+        return combinedElements.toString();
+    }
+
+    //creates the answers based on the input file converted into strings
     private void createAnswers (Vector<String []> answerData, Quiz quiz){
         for (int i = 0; i< answerData.size(); i++) {
-            int n = 0;
-            int counter = 0;
+            int counter = 0; //takes count of how many answers we have pushed
             for (int j = 0; j < answerData.elementAt(i).length; j++) {
                 String element = answerData.elementAt(i)[j];
                 //opcode is everything before the =
@@ -58,18 +60,15 @@ public class TextInterpreter {
                 String value = element.substring(element.lastIndexOf("=") + 1);
 
                 Answer answerToPush;
-                Outcome outcomeToPush;
 
                 switch (opCode) {
-                    case "N" -> n = Integer.parseInt(value) - 1;
                     case "DES" -> {
-                        answerToPush = new Answer(quiz.getQuestionOptionsNumber(n) + 1, value);
-                        quiz.addAnswer(n, answerToPush);
+                        answerToPush = new Answer(value);
+                        quiz.addAnswer(i, answerToPush);
                     }
                     case "TYP" -> {
-                        outcomeToPush = new Outcome(value);
-                        quiz.addOutcome(n, counter, outcomeToPush);
-                        counter++;
+                        quiz.setAnswerType(i,counter,value);
+                        counter ++;
                     }
                 }
             }
@@ -81,6 +80,7 @@ public class TextInterpreter {
         int n= 0;
         String description = "";
         String image = "";
+        //starts at one because the first line is the quiz title
         setQuizTitle(questionData, quiz);
         for (int i = 1; i< questionData.size(); i++){
             for (int j = 0; j < questionData.elementAt(i).length; j++){
@@ -95,8 +95,8 @@ public class TextInterpreter {
                     default -> throw (new UnsupportedOperationException("Invalid string opcode" + element));
                 }
             }
-            n++;
             quiz.addQuestion(new Question(n,description,image));
+            n++;
         }
     }
 

@@ -1,4 +1,3 @@
-#N=1
 #DES=risp1
 #TYP=test1
 #DES=risp2
@@ -8,7 +7,6 @@
 #DES=risp4
 #TYP=test4
 ~~
-#N=2
 #DES=1 days
 #TYP=test1
 #DES=3 days
@@ -18,7 +16,6 @@
 #DES=7 days
 #TYP=test4
 ~~
-#N=3
 #DES=risp1
 #TYP=test1
 #DES=risp2

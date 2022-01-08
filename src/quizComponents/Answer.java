@@ -1,21 +1,33 @@
 package quizComponents;
 //represents a single answer option
 
-import javax.swing.*;
-
 public class Answer {
-    public Answer(int n, String description){
+    public Answer(String description){
         this.description = description;
-        outcome = new Outcome();
-    }
-    public void setOutcome(Outcome toAdd){
-        outcome = toAdd;
+        selected = false;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    private String type; //indicates the type of answers group the answer belong to
+    private boolean selected;
     private String description;
-    private Outcome outcome;
 }

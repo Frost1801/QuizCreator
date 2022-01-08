@@ -11,15 +11,13 @@ public class Question {
         answers = new Vector<>();
     }
 
-    public int getOptionsNumber (){
+    public int getAnswersNumber(){
         return answers.size();
     }
     public void addAnswers (Answer toAdd){
         answers.add(toAdd);
     }
-    public void addOutcome (int n, Outcome toAdd){
-        answers.elementAt(n).setOutcome(toAdd);
-    }
+
     public Answer getAnswer (int index){
         return answers.elementAt(index);
     }
@@ -31,6 +29,21 @@ public class Question {
     public String getImage() {
         return image;
     }
+    public void setAnswerIsSelected (int index, boolean isSelected){
+        answers.elementAt(index).setSelected(isSelected);
+    }
+    public boolean getAnswerIsSelected(int index){
+        return answers.elementAt(index).isSelected();
+    }
+
+    public void setAnswerType (int index, String type){
+        answers.elementAt(index).setType(type);
+    }
+    public String getAnswerType (int index){
+        return answers.elementAt(index).getType();
+    }
+
+
 
     private int n;
     private String description;
