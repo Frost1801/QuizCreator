@@ -9,32 +9,30 @@ import java.util.Vector;
 public class Quiz {
     public Quiz(){
         questions = new Vector<>();
+        results = new Vector<>();
         currentQuestion = 0;
         answered = 0;
     }
     //**MOVING THROUGH THE QUIZ**
-    public void startQuiz (){
-        currentQuestion = 0;
-    }
 
-    public void getResult (){
-        Map<String,Integer> outcomeDistribution = new HashMap<>();
+    public Result getResult (){
         for (Question it: questions){
             for (int i = 0; i < it.getAnswersNumber(); i++){
                 if (it.getAnswerIsSelected(i)){
                     String type = it.getAnswerType(i);
-                    if (outcomeDistribution.containsKey(type)){
-                        int currentValue = outcomeDistribution.get(type);
-                        outcomeDistribution.put(type,currentValue + 1);
-                    }
-                    else {
-                        outcomeDistribution.put(type,1);
+                    for (Result rs : results){
+                        if (rs.getType().equals(type)){
+                            rs.incrementInstances();
+                            break;
+                        }
+
                     }
                 }
             }
         }
-        System.out.println(outcomeDistribution);
+        return getMaximumInstances();
     }
+
 
     public boolean questionForward (){
         if (currentQuestion + 1 < questions.size()){
@@ -143,10 +141,25 @@ public class Quiz {
         return credits;
     }
 
+    public void addResult (Result toAdd){
+        results.add(toAdd);
+    }
+
+    private Result getMaximumInstances (){
+        int maxIndex =0;
+        for (int i = 1; i < results.size(); i++){
+            if (results.elementAt(i).getInstances() > results.elementAt(maxIndex).getInstances()){
+                maxIndex = i;
+            }
+        }
+        return results.elementAt(maxIndex);
+    }
+
     private int answered;
     private int currentQuestion;
     private String title;
-    private Vector<Question> questions;
+    private final Vector<Question> questions;
+    private final Vector<Result> results;
     private String credits;
 
 }

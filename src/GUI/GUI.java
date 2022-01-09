@@ -2,13 +2,13 @@ package GUI;
 
 import quizComponents.Answer;
 import quizComponents.Quiz;
+import quizComponents.Result;
 import quizComponents.TextInterpreter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,36 +20,56 @@ import static GUI.TitleFrame.createCenterGenericButton;
 public class GUI implements ActionListener {
 
     public GUI () throws IOException {
-        TextInterpreter textInterpreter = new TextInterpreter();
-        quiz = new Quiz();
-        textInterpreter.prepareTest(quiz);
-
-
-
-        tf = new TitleFrame(quiz.getTitle());
-        start = createCenterGenericButton("Start",tf.getOptionsPanel());
-        credits = createCenterGenericButton("Credits",tf.getOptionsPanel());
-        quit = createCenterGenericButton("Quit",tf.getOptionsPanel());
-        addMenuActionListener();
-        tf.getOptionsPanel().add(Box.createRigidArea(new Dimension(0,150)));
-
-        tf.setVisible(true);
-
+        initializeQuiz();
+        createTitleWindow();
     }
 
     //static methods used for the mainframe
-
+    private void initializeQuiz () throws IOException {
+        TextInterpreter textInterpreter = new TextInterpreter();
+        quiz = new Quiz();
+        textInterpreter.prepareTest(quiz);
+    }
+    private void createTitleWindow (){
+        titleFrame = new TitleFrame(quiz.getTitle());
+        start = createCenterGenericButton("Start", titleFrame.getOptionsPanel());
+        credits = createCenterGenericButton("Credits", titleFrame.getOptionsPanel());
+        quit = createCenterGenericButton("Quit", titleFrame.getOptionsPanel());
+        addMenuActionListener();
+        titleFrame.getOptionsPanel().add(Box.createRigidArea(new Dimension(0,150)));
+        titleFrame.setVisible(true);
+    }
     private void createQuizWindow (){
         options = new Vector<>();
         goLeft = new JButton();
         goRight = new JButton();
 
+
+
         goLeft.addActionListener(this);
         goRight.addActionListener(this);
 
-        qf = new QuestionFrame(quiz.getTitle(),quiz.getQuestionsNumber(), goRight,goLeft, options);
+
+        questionFrame = new QuestionFrame(quiz.getTitle(),quiz.getQuestionsNumber(), goRight,goLeft);
         displayFullQuestion(0);
         addOptionsActionListener();
+    }
+
+    private void createCreditsWindow (){
+        back = new JButton();
+        back = TitleFrame.createGenericButton("Back");
+        back.addActionListener(this);
+        creditsFrame = new CreditsFrame(quiz.getCredits(), back);
+        creditsFrame.setVisible(true);
+    }
+
+    private void createResultsWindow (){
+        backToMainMenu = new JButton();
+        backToMainMenu = TitleFrame.createGenericButton("Back to main menu");
+        backToMainMenu.addActionListener(this);
+        Result rs = quiz.getResult();
+        resultFrame = new ResultFrame(rs.getDescription(),rs.getImagePath(), backToMainMenu);
+        resultFrame.setVisible(true);
     }
 
     private static double findRatio(int height, int windowHeight){
@@ -109,7 +129,7 @@ public class GUI implements ActionListener {
         Answer ans;
         for (int i = 0; i < numberOfAnswers; i++) {
             ans = quiz.getAnswer(questionIndex,i);
-            qf.addAnswer(ans.getDescription(), options, false);
+            questionFrame.addAnswer(ans.getDescription(), options, false);
         }
         updateAnswerColor();
         addOptionsActionListener();
@@ -117,7 +137,7 @@ public class GUI implements ActionListener {
 
     private void updateWindow (){
         int n = quiz.getCurrentQuestion();
-        qf.reset();
+        questionFrame.reset();
         displayFullQuestion(n);
     }
 
@@ -130,12 +150,12 @@ public class GUI implements ActionListener {
         displayQuestionImage(imagePath);
         displayQuestionDescription(description);
         updateGoRight();
-        qf.setVisible(true);
+        questionFrame.setVisible(true);
     }
 
     //updates the progressbar based on the current answered vs the total number
     private void updateProgressBar (){
-        qf.updateProgressBar(quiz.getAnswered());
+        questionFrame.updateProgressBar(quiz.getAnswered());
     }
 
     //changes goRight button in case we are at the last question
@@ -145,7 +165,7 @@ public class GUI implements ActionListener {
             goRight.setText(text);
         }
         else {
-            qf.createGoRight(goRight);
+            questionFrame.createGoRight(goRight);
         }
     }
 
@@ -168,11 +188,11 @@ public class GUI implements ActionListener {
     }
 
     private void displayQuestionImage (String path){
-        qf.addImage(path, qf.getTopPanel());
+        questionFrame.addImage(path, questionFrame.getTopPanel());
     }
 
     private void displayQuestionDescription (String description){
-        qf.addQuestion(description, qf.getTopPanel());
+        QuestionFrame.addQuestion(description, questionFrame.getTopPanel());
     }
 
     //returns true only if we are on the last question
@@ -184,18 +204,23 @@ public class GUI implements ActionListener {
     }
 
     Quiz quiz;
-    QuestionFrame qf;
+    QuestionFrame questionFrame;
     JButton goRight;
     JButton goLeft;
     Vector<JButton> options;
 
-    TitleFrame tf;
+    TitleFrame titleFrame;
     JButton start;
     JButton credits;
     JButton quit;
 
-    ConfirmQuitFrame cf;
+    ConfirmQuitFrame confirmQuitFrame;
 
+    JButton back;
+    CreditsFrame creditsFrame;
+
+    ResultFrame resultFrame;
+    JButton backToMainMenu;
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -205,7 +230,8 @@ public class GUI implements ActionListener {
                 updateWindow();
             }
             if (isLastQuestion()){
-                quiz.getResult();
+                createResultsWindow();
+                questionFrame.dispose();
             }
         }
         else if (e.getSource() == goLeft){
@@ -230,18 +256,35 @@ public class GUI implements ActionListener {
 
         if (e.getSource() == start){
             createQuizWindow();
-            tf.dispose();
+            titleFrame.dispose();
         }
         else if (e.getSource() == credits){
-            System.out.println("credits");
+            createCreditsWindow();
+            titleFrame.dispose();
         }
         else if (e.getSource() == quit){
-            if (cf != null) {
-                cf.dispose();
+            if (confirmQuitFrame != null) {
+                confirmQuitFrame.dispose();
             }
-            cf = new ConfirmQuitFrame();
-            cf.setTitleFrame(tf);
+            confirmQuitFrame = new ConfirmQuitFrame();
+            confirmQuitFrame.setTitleFrame(titleFrame);
+        }
+
+        if (e.getSource() == back){ //to go back to Main menu
+            createTitleWindow();
+            creditsFrame.dispose();
+        }
+
+        if (e.getSource() == backToMainMenu){
+            createTitleWindow();
+            try {
+                initializeQuiz();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            resultFrame.dispose();
         }
 
     }
 }
+

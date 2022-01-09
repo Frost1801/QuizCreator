@@ -16,7 +16,7 @@ public class QuestionFrame extends JFrame {
     public static final int WINDOW_HEIGHT = 700;
     public static final int WINDOW_WIDTH = 700;
 
-    public QuestionFrame(String title, int maxValue, JButton goRight, JButton goLeft, Vector<JButton> options){
+    public QuestionFrame(String title, int maxValue, JButton goRight, JButton goLeft){
         questionFrame = createMainFrame(title);
         centerPanel = createCenterPanel(questionFrame);
         topPanel = createTopPanel(centerPanel);
@@ -76,24 +76,32 @@ public class QuestionFrame extends JFrame {
     }
 
     public static void addQuestion(String questionText, JPanel destination){
-        JLabel toReturn = new JLabel(addHTML(questionText));
-        toReturn.setHorizontalAlignment(JLabel.CENTER);
-        toReturn.setVerticalAlignment(JLabel.TOP);
-        toReturn.setFont(new Font("Dialog",Font.BOLD,30));
+        JLabel lbl = createLabel(questionText);
         JPanel tmp = new JPanel();
         tmp.setLayout(new BorderLayout(10,10));
         tmp.setBackground(new Color(104, 120, 222, 119));
-        tmp.add(toReturn);
+        tmp.add(lbl);
         Border emptyBorder = new EmptyBorder(20,20,20,20);
         tmp.setBorder(emptyBorder);
         destination.add(tmp,BorderLayout.NORTH);
     }
 
-    public void addImage (String path, JPanel destination){
+    public static JLabel createLabel (String text){
+        JLabel toReturn = new JLabel(addHTML(text));
+        toReturn.setHorizontalAlignment(JLabel.CENTER);
+        toReturn.setVerticalAlignment(JLabel.TOP);
+        toReturn.setFont(new Font("Dialog",Font.BOLD,30));
+        return toReturn;
+    }
+
+    public static ImageIcon getFixedDimensionImage (String path){
         JLabel tmp = fitPicToFrame(path, WINDOW_HEIGHT);
         //image inserted
-        ImageIcon image = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(tmp.getWidth(), tmp.getHeight(), Image.SCALE_DEFAULT));
+        return new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(tmp.getWidth(), tmp.getHeight(), Image.SCALE_DEFAULT));
+    }
 
+    public static void addImage (String path, JPanel destination){
+        ImageIcon image = getFixedDimensionImage(path);
         //label of the inserted image
         JLabel labelImage = new JLabel();
         labelImage.setIcon(image);
@@ -167,18 +175,21 @@ public class QuestionFrame extends JFrame {
     }
 
 
+
+    public void dispose (){
+        questionFrame.dispose();
+    }
     public JPanel getTopPanel() {
         return topPanel;
     }
 
     private JProgressBar progressBar; //progressbar
 
-    private JLabel question; //question of the quiz
 
-    private JPanel answersGrid; //holds the answers buttons
+    private final JPanel answersGrid; //holds the answers buttons
     private final JPanel lowerPanel; //holds lower elements
     private final JPanel topPanel; // holds top elements
-    private JPanel centerPanel; //holds top and lower panel
+    private final JPanel centerPanel; //holds top and lower panel
     private final JFrame questionFrame; //holds center panel
 
 }

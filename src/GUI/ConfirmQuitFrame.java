@@ -69,7 +69,7 @@ public class ConfirmQuitFrame implements ActionListener {
 
     private TitleFrame toDelete;
 
-    private JFrame mainFrame;
-    private JButton yes;
-    private JButton no;
+    private final JFrame mainFrame;
+    private final JButton yes;
+    private final JButton no;
 }

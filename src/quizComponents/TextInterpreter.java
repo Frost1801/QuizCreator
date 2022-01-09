@@ -1,6 +1,6 @@
 package quizComponents;
 
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 
 import java.io.FileReader;
@@ -13,9 +13,11 @@ public class TextInterpreter {
         Vector <String []> questionData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/questions.txt");
         Vector <String []> answersData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/answers.txt");
         String credits = readText("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/credits.txt");
+        Vector<String[]> resultsData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/results.txt");
         toPrepare.setCredits(credits);
         createQuestions(questionData,toPrepare);
         createAnswers(answersData,toPrepare);
+        createResults(resultsData,toPrepare);
     }
     //reads and formats the text file to extract data more easily
     private Vector<String []> initializeData(String filePath) throws IOException{
@@ -97,6 +99,28 @@ public class TextInterpreter {
             }
             quiz.addQuestion(new Question(n,description,image));
             n++;
+        }
+    }
+
+    private void createResults (Vector<String []> resultsData, Quiz quiz){
+        String description = "";
+        String image = "";
+        String type = "";
+        for (int i = 0; i< resultsData.size(); i++){
+            for (int j = 0; j < resultsData.elementAt(i).length; j++){
+                String element =  resultsData.elementAt(i)[j];
+                //opcode is everything before the =
+                String opCode = element.substring(0,element.lastIndexOf("="));
+                //value is everything after the =
+                String value = element.substring(element.lastIndexOf("=" )+ 1);
+                switch (opCode) {
+                    case "DES" -> description = value;
+                    case "TYP" -> type = value;
+                    case "IMG" -> image = value;
+                    default -> throw (new UnsupportedOperationException("Invalid string opcode" + element));
+                }
+            }
+            quiz.addResult(new Result(type,description,image));
         }
     }
 

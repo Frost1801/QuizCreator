@@ -29,5 +29,5 @@ public class Answer {
 
     private String type; //indicates the type of answers group the answer belong to
     private boolean selected;
-    private String description;
+    private final String description;
 }
