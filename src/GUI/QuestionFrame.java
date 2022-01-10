@@ -3,6 +3,9 @@ package GUI;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.plaf.ProgressBarUI;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.util.Vector;
 
@@ -26,10 +29,12 @@ public class QuestionFrame extends JFrame {
         addProgressBar(maxValue, lowerPanel);
     }
 
+    //sets visible
     public void setVisible (boolean visible){
         this.questionFrame.setVisible(visible);
     }
 
+    //creates a main frame with a title and fixed dimensions in the middle of the screen
     public static JFrame createMainFrame(String title){
         JFrame toReturn = new JFrame();
         toReturn.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
@@ -37,20 +42,26 @@ public class QuestionFrame extends JFrame {
         toReturn.setLocationRelativeTo(null);
         toReturn.setTitle(title);
         toReturn.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        int dimensions = 5;
+        Color borderColor =new Color(23, 29, 34);
+        MatteBorder matteBorder = new MatteBorder(dimensions, dimensions, dimensions, dimensions, borderColor);
+        toReturn.getRootPane().setBorder(matteBorder);
         return toReturn;
     }
 
+    //creates a border-layout panel
     public static JPanel createCenterPanel (JFrame destination){
         JPanel toReturn = new JPanel();
-        toReturn.setBackground(Color.BLUE);
+        toReturn.setBackground(new Color(23, 29, 34));
         destination.add(toReturn,BorderLayout.CENTER);
         toReturn.setLayout(new BoxLayout(toReturn,BoxLayout.Y_AXIS));
         return toReturn;
     }
 
+    //creates a border-layout panel
     public static JPanel createTopPanel (JPanel destination){
         JPanel toReturn = new JPanel();
-        toReturn.setBackground(Color.GREEN);
+        toReturn.setBackground(new Color(255, 255, 255));
         destination.add(toReturn);
         toReturn.setLayout(new BorderLayout());
         return toReturn;
@@ -58,7 +69,7 @@ public class QuestionFrame extends JFrame {
 
     public static JPanel createLowerPanel (JPanel destination){
         JPanel toReturn = new JPanel();
-        toReturn.setBackground(Color.RED);
+        toReturn.setBackground(new Color(23, 29, 34));
         destination.add(toReturn, BoxLayout.Y_AXIS);
         toReturn.setLayout(new BorderLayout(20,20));
         return toReturn;
@@ -66,7 +77,7 @@ public class QuestionFrame extends JFrame {
 
     public static JPanel createAnswersGrid(JPanel destination){
         JPanel toReturn = new JPanel();
-        toReturn.setBackground(Color.MAGENTA);
+        toReturn.setBackground(new Color(23, 29, 34));
 
         destination.add(toReturn, BorderLayout.CENTER);
         toReturn.setLayout(new GridLayout(0,2,10,10));
@@ -77,10 +88,12 @@ public class QuestionFrame extends JFrame {
 
     public static void addQuestion(String questionText, JPanel destination){
         JLabel lbl = createLabel(questionText);
+        lbl.setForeground(new Color(23, 29, 34));
         JPanel tmp = new JPanel();
         tmp.setLayout(new BorderLayout(10,10));
-        tmp.setBackground(new Color(104, 120, 222, 119));
+        tmp.setBackground(new Color(193, 8, 24, 255));
         tmp.add(lbl);
+
         Border emptyBorder = new EmptyBorder(20,20,20,20);
         tmp.setBorder(emptyBorder);
         destination.add(tmp,BorderLayout.NORTH);
@@ -94,19 +107,24 @@ public class QuestionFrame extends JFrame {
         return toReturn;
     }
 
-    public static ImageIcon getFixedDimensionImage (String path){
-        JLabel tmp = fitPicToFrame(path, WINDOW_HEIGHT);
+    public static ImageIcon getFixedDimensionImage (String path, double ratio){
+        JLabel tmp = fitPicToFrame(path, WINDOW_HEIGHT,ratio);
         //image inserted
         return new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(tmp.getWidth(), tmp.getHeight(), Image.SCALE_DEFAULT));
     }
 
-    public static void addImage (String path, JPanel destination){
-        ImageIcon image = getFixedDimensionImage(path);
+    public static void addImageToPanel(String path, JPanel destination){
+        ImageIcon image = getFixedDimensionImage(path,0);
         //label of the inserted image
         JLabel labelImage = new JLabel();
         labelImage.setIcon(image);
         labelImage.setHorizontalAlignment(JLabel.CENTER);
         destination.add(labelImage);
+    }
+    public static void addImageToButton (String path, JButton destination,double ratio){
+        ImageIcon image = getFixedDimensionImage(path,ratio);
+        //label of the inserted imag
+        destination.setIcon(image);
     }
 
     private void addProgressBar(int maxNum, JPanel destination){
@@ -117,31 +135,34 @@ public class QuestionFrame extends JFrame {
         progressBar.setValue(0);
         progressBar.setBounds(0,0,700,50);
         progressBar.setMaximum(maxNum);
+        progressBar.setBackground(new Color(23, 29, 34));
+        progressBar.setForeground(new Color(193, 8, 24));
+        progressBar.setFont(new Font("Dialog",Font.BOLD,15));
         destination.add(progressBar, BorderLayout.SOUTH);
     }
 
     public void createGoRight (JButton goRight){
-        goRight.setText("-->");
-        goRight.setFont(new Font("Dialog",Font.BOLD,20));
-    }
-
-    public void addMoveButtons (JButton goRight, JButton goLeft){
-        goLeft.setText("<--");
-        goLeft.setFont(new Font("Dialog",Font.BOLD,20));
-        createGoRight(goRight);
-
+        String rightPath = "/home/sergio/Git-Projects/quizCreator/ImmaginiGUI/Right-arrow.png";
+        addImageToButton(rightPath,goRight,0.125);
         goRight.setFocusable(false);
+    }
+    public void addMoveButtons (JButton goRight, JButton goLeft){
+
+        String leftPath = "/home/sergio/Git-Projects/quizCreator/ImmaginiGUI/Left-arrow.png";
+        addImageToButton(leftPath,goLeft,0.125);
         goLeft.setFocusable(false);
 
 
-        Border leftEmpty = new EmptyBorder(10,10,10,0);
-        Border rightEmpty = new EmptyBorder(10,0,10,10);
+        Color borderColor = new Color(193, 8, 24, 255);
+        int distance = 10;
+        Border leftMatte = new MatteBorder(distance,distance,distance,distance, borderColor );
+        Border rightMatte =  new MatteBorder(distance,distance,distance,distance, borderColor);
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
-        rightPanel.setBorder(rightEmpty);
-        leftPanel.setBorder(leftEmpty);
+        rightPanel.setBorder(rightMatte);
+        leftPanel.setBorder(leftMatte);
 
         rightPanel.add (goRight);
         leftPanel.add(goLeft);
@@ -157,9 +178,6 @@ public class QuestionFrame extends JFrame {
             answer.setText(addHTML(description));
             answer.setFont(new Font("Dialog",Font.BOLD,20));
             answer.setFocusable(false);
-            if (isSelected){
-                answer.setBackground(Color.green);
-            }
             options.add(answer);
             answersGrid.add(answer);
     }

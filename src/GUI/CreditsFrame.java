@@ -21,7 +21,7 @@ public class CreditsFrame {
         TitleFrame.createTitle(title, topPanel);
         JLabel labelText = QuestionFrame.createLabel(creditsDescription);
         if (imagePath != null){
-            ImageIcon image = QuestionFrame.getFixedDimensionImage(imagePath);
+            ImageIcon image = QuestionFrame.getFixedDimensionImage(imagePath,0);
             labelText.setIcon(image);
         }
         labelText.setHorizontalTextPosition(JLabel.CENTER);

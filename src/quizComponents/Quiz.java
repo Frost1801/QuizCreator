@@ -2,8 +2,6 @@ package quizComponents;
 //quiz class
 
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 public class Quiz {
@@ -13,8 +11,8 @@ public class Quiz {
         currentQuestion = 0;
         answered = 0;
     }
-    //**MOVING THROUGH THE QUIZ**
 
+    //returns the result of the quiz, meaning the Result that had the most instances
     public Result getResult (){
         for (Question it: questions){
             for (int i = 0; i < it.getAnswersNumber(); i++){
@@ -30,10 +28,21 @@ public class Quiz {
                 }
             }
         }
-        return getMaximumInstances();
+        return getMaximumInstancesResult();
     }
 
+    //returns the result with the most instances
+    private Result getMaximumInstancesResult(){
+        int maxIndex =0;
+        for (int i = 1; i < results.size(); i++){
+            if (results.elementAt(i).getInstances() > results.elementAt(maxIndex).getInstances()){
+                maxIndex = i;
+            }
+        }
+        return results.elementAt(maxIndex);
+    }
 
+    //moves forward in the quiz if possible
     public boolean questionForward (){
         if (currentQuestion + 1 < questions.size()){
             currentQuestion ++;
@@ -44,6 +53,7 @@ public class Quiz {
         }
 
     }
+    //moves backwards in the quiz if possible
     public boolean questionBackwards (){
         if (currentQuestion> 0){
             currentQuestion --;
@@ -56,7 +66,7 @@ public class Quiz {
     }
 
 
-
+    //sets the title of the quiz
     public void setTitle(String title) {
         this.title = title;
     }
@@ -64,17 +74,14 @@ public class Quiz {
         return title;
     }
 
-    //**ANSWER METHODS**
+
 
     //methods that change the selected answer
     public void setIsSelectedAnswer (int questionN, int answerN, boolean isSelected ){
         resetSelectedAnswer();
         questions.elementAt(questionN).getAnswer(answerN).setSelected(isSelected);
     }
-    public boolean getAnswerIsSelected(int questionN, int answerN){
-        return questions.elementAt(questionN).getAnswer(answerN).isSelected();
-    }
-
+    //gets the index of the selected answer to a question, if none are selected it returns -1
     public int getSelectedAnswerIndex (int questionN){
         Question current = questions.elementAt(questionN);
         for (int i = 0; i < current.getAnswersNumber(); i++){
@@ -84,17 +91,18 @@ public class Quiz {
         }
         return -1;
     }
-
+    //resets the selected answer of all the questions
     public void resetSelectedAnswer (){
         int n = getCurrentQuestion();
         for (int i = 0; i < questions.elementAt(n).getAnswersNumber(); i++){
             questions.elementAt(n).setAnswerIsSelected(i,false);
         }
     }
+    //adds an answer to a question
     public void addAnswer (int questionN, Answer toAdd) {
         questions.elementAt(questionN).addAnswers(toAdd);
     }
-
+    //sets the type of selected answer
     public void setAnswerType (int questionN, int answerN, String type){
         questions.elementAt(questionN).setAnswerType(answerN, type);
     }
@@ -106,6 +114,7 @@ public class Quiz {
     public void addQuestion (Question q){
         questions.add(q);
     }
+    //returns the quiz that's being currently displayed
     public int getCurrentQuestion() {
         return currentQuestion;
     }
@@ -125,6 +134,7 @@ public class Quiz {
         return questions.elementAt(index).getImage();
     }
 
+    //increases the number of the answered questions
     public void incrementAnswered() {
         this.answered ++;
     }
@@ -133,26 +143,16 @@ public class Quiz {
         return answered;
     }
 
+    //credits of the quiz
     public void setCredits(String credits) {
         this.credits = credits;
     }
-
     public String getCredits() {
         return credits;
     }
 
     public void addResult (Result toAdd){
         results.add(toAdd);
-    }
-
-    private Result getMaximumInstances (){
-        int maxIndex =0;
-        for (int i = 1; i < results.size(); i++){
-            if (results.elementAt(i).getInstances() > results.elementAt(maxIndex).getInstances()){
-                maxIndex = i;
-            }
-        }
-        return results.elementAt(maxIndex);
     }
 
     private int answered;

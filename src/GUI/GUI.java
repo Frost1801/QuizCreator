@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
+
+import static GUI.ConfirmFrame.createButton;
 import static GUI.TitleFrame.createCenterGenericButton;
 
 
@@ -30,6 +32,15 @@ public class GUI implements ActionListener {
         quiz = new Quiz();
         textInterpreter.prepareTest(quiz);
     }
+
+    private void createConfirmationFrame (String question){
+        yes = createButton("Yes");
+        no = createButton("No");
+        confirmQuitFrame = new ConfirmFrame(yes,no,question);
+        yes.addActionListener(this);
+        no.addActionListener(this);
+    }
+
     private void createTitleWindow (){
         titleFrame = new TitleFrame(quiz.getTitle());
         start = createCenterGenericButton("Start", titleFrame.getOptionsPanel());
@@ -81,7 +92,7 @@ public class GUI implements ActionListener {
         return height/(double)previous;
     }
 
-    public static JLabel fitPicToFrame(String path, int windowHeight){
+    public static JLabel fitPicToFrame(String path, int windowHeight, double ratio){
         JLabel tmp = new JLabel();
         int width;
         int height;
@@ -95,8 +106,8 @@ public class GUI implements ActionListener {
 
         width = img.getWidth();
         height = img.getHeight();
-
-        double ratio = findRatio(height,windowHeight);
+        if (ratio == 0)
+            ratio = findRatio(height,windowHeight);
         width *= ratio;
         height *= ratio;
         tmp.setSize(width,height);
@@ -163,6 +174,7 @@ public class GUI implements ActionListener {
         if (isLastQuestion()){
             String text = addHTML("Complete<br/>Quiz");
             goRight.setText(text);
+            goRight.setFont(new Font("Dialog",Font.BOLD,12));
         }
         else {
             questionFrame.createGoRight(goRight);
@@ -174,7 +186,7 @@ public class GUI implements ActionListener {
         int n = quiz.getCurrentQuestion();
         int selectedIndex = quiz.getSelectedAnswerIndex(n);
         if (selectedIndex != -1){
-            options.elementAt(selectedIndex).setBackground(Color.GREEN);
+            options.elementAt(selectedIndex).setBackground(new Color(23, 162, 95));
         }
     }
 
@@ -184,11 +196,11 @@ public class GUI implements ActionListener {
         for (JButton it: options){
             it.setBackground(new JButton().getBackground());
         }
-        options.elementAt(index).setBackground(Color.GREEN);
+        options.elementAt(index).setBackground(new Color(23, 162, 95));
     }
 
     private void displayQuestionImage (String path){
-        questionFrame.addImage(path, questionFrame.getTopPanel());
+        QuestionFrame.addImageToPanel(path, questionFrame.getTopPanel());
     }
 
     private void displayQuestionDescription (String description){
@@ -197,10 +209,10 @@ public class GUI implements ActionListener {
 
     //returns true only if we are on the last question
     private boolean isLastQuestion (){
-        int n = quiz.getCurrentQuestion();
+        int currentQuestion = quiz.getCurrentQuestion();
         int totAnswered = quiz.getAnswered();
         int totQuestions = quiz.getQuestionsNumber();
-        return n == totQuestions - 1 && totQuestions == totAnswered;
+        return currentQuestion == totQuestions - 1 && totQuestions == totAnswered;
     }
 
     Quiz quiz;
@@ -214,7 +226,10 @@ public class GUI implements ActionListener {
     JButton credits;
     JButton quit;
 
-    ConfirmQuitFrame confirmQuitFrame;
+    ConfirmFrame confirmQuitFrame;
+    JButton yes;
+    JButton no;
+
 
     JButton back;
     CreditsFrame creditsFrame;
@@ -222,17 +237,19 @@ public class GUI implements ActionListener {
     ResultFrame resultFrame;
     JButton backToMainMenu;
 
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
         int n = quiz.getCurrentQuestion();
         if (e.getSource() == goRight){
+            if (isLastQuestion()){
+               createConfirmationFrame("Confirm?");
+            }
             if (quiz.questionForward()){
                 updateWindow();
             }
-            if (isLastQuestion()){
-                createResultsWindow();
-                questionFrame.dispose();
-            }
+
         }
         else if (e.getSource() == goLeft){
             if (quiz.questionBackwards()){
@@ -263,11 +280,23 @@ public class GUI implements ActionListener {
             titleFrame.dispose();
         }
         else if (e.getSource() == quit){
-            if (confirmQuitFrame != null) {
+            createConfirmationFrame("Exit?");
+        }
+        if (e.getSource() == yes){
+            if (titleFrame != null){
+                titleFrame.dispose();
                 confirmQuitFrame.dispose();
+                titleFrame = null;
             }
-            confirmQuitFrame = new ConfirmQuitFrame();
-            confirmQuitFrame.setTitleFrame(titleFrame);
+            if (questionFrame != null){
+                createResultsWindow();
+                questionFrame.dispose();
+                questionFrame = null;
+            }
+        }
+
+        if (e.getSource() ==  no){
+            confirmQuitFrame.dispose();
         }
 
         if (e.getSource() == back){ //to go back to Main menu
@@ -284,6 +313,7 @@ public class GUI implements ActionListener {
             }
             resultFrame.dispose();
         }
+
 
     }
 }

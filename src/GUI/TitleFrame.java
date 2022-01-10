@@ -3,17 +3,14 @@ package GUI;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.event.WindowListener;
+
 
 
 import static GUI.GUI.addHTML;
-
+//title frame that's displayed when
 public class TitleFrame {
-
-
-    public static final int WINDOW_HEIGHT = 700;
-    public static final int WINDOW_WIDTH = 700;
 
     public TitleFrame(String title){
         titleFrame = QuestionFrame.createMainFrame(title);
@@ -44,13 +41,16 @@ public class TitleFrame {
         toCreate.setFont(new Font("Dialog",Font.BOLD,30));
         toCreate.setFocusable(false);
         toCreate.setAlignmentX(Component.CENTER_ALIGNMENT);
+        int dimension = 5;
+        Border matteBorder = new MatteBorder(dimension,dimension,dimension,dimension,new Color(193, 8, 24, 255));
+        toCreate.setBorder(matteBorder);
         toCreate.setMaximumSize(new Dimension(250,200));
         return toCreate;
     }
 
     private JPanel createOptionsPanel (JPanel destination){
         JPanel toReturn = new JPanel();
-        toReturn.setBackground(Color.BLUE);
+        toReturn.setBackground(new Color(23, 29, 34));
         destination.add(toReturn,BorderLayout.CENTER);
         toReturn.setLayout(new BoxLayout(toReturn,BoxLayout.Y_AXIS));
         return toReturn;
@@ -59,7 +59,7 @@ public class TitleFrame {
         JLabel toReturn = new JLabel(addHTML(questionText));
         toReturn.setHorizontalAlignment(JLabel.CENTER);
         toReturn.setVerticalAlignment(JLabel.TOP);
-        toReturn.setFont(new Font("Dialog",Font.BOLD,70));
+        toReturn.setFont(new Font("Dialog",Font.BOLD,60));
         Border emptyBorder = new EmptyBorder(60,20,20,20);
         toReturn.setBorder(emptyBorder);
         destination.add(toReturn,BorderLayout.NORTH);
@@ -69,15 +69,9 @@ public class TitleFrame {
         titleFrame.dispose();
     }
 
-    public JFrame getTitleFrame() {
-        return titleFrame;
-    }
-
     public JPanel getOptionsPanel() {
         return optionsPanel;
     }
-
-    private JLabel title;
 
     private final JPanel optionsPanel;
 

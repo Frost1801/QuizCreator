@@ -22,7 +22,7 @@ public class TextInterpreter {
     //reads and formats the text file to extract data more easily
     private Vector<String []> initializeData(String filePath) throws IOException{
        String combinedElements = readText(filePath);
-        //removes spaces and newlines
+        //remove spaces and newlines
         String answersNoSpaces = combinedElements.replaceAll("[\n\r]", "");
 
         //splits all the questions and answers
@@ -38,6 +38,7 @@ public class TextInterpreter {
         return separatedLines;
     }
 
+    //reads a text file
     private String readText (String filePath) throws IOException {
         //reads the text file
         FileReader rd = new FileReader(filePath);
@@ -102,6 +103,7 @@ public class TextInterpreter {
         }
     }
 
+    //initializes results from the results textfile
     private void createResults (Vector<String []> resultsData, Quiz quiz){
         String description = "";
         String image = "";
@@ -120,6 +122,7 @@ public class TextInterpreter {
                     default -> throw (new UnsupportedOperationException("Invalid string opcode" + element));
                 }
             }
+            //adds the result to the quiz list of possible results
             quiz.addResult(new Result(type,description,image));
         }
     }

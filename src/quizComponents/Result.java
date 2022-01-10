@@ -1,5 +1,6 @@
 package quizComponents;
 
+//class represents a possible result
 public class Result {
     public Result (String type,String description,String imagePath){
         instances = 0;
@@ -28,7 +29,7 @@ public class Result {
     }
 
     private int instances;
-    private String type;
-    private String description;
-    private String imagePath;
+    private final String type;
+    private final String description;
+    private final String imagePath;
 }
