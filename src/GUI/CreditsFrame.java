@@ -8,10 +8,10 @@ public class CreditsFrame {
     public CreditsFrame ( String creditsDescription, JButton back){
         creditsFrame = new JFrame();
         creditsFrame = QuestionFrame.createMainFrame("Credits");
-        createStandardFrame(creditsFrame,"Credits",creditsDescription,back,null);
+        createStandardFrame(creditsFrame,"Credits",creditsDescription,back,null,40,0);
     }
 
-    public static void createStandardFrame (JFrame destination, String title, String creditsDescription, JButton functionality, String imagePath){
+    public static void createStandardFrame (JFrame destination, String title, String creditsDescription, JButton functionality, String imagePath, int labelSize, double imageRatio){
         //holds top and lower panel
         JPanel centerPanel = QuestionFrame.createCenterPanel(destination);
         // holds top elements
@@ -19,9 +19,9 @@ public class CreditsFrame {
         //holds lower elements
         JPanel lowerPanel = QuestionFrame.createLowerPanel(centerPanel);
         TitleFrame.createTitle(title, topPanel);
-        JLabel labelText = QuestionFrame.createLabel(creditsDescription);
+        JLabel labelText = QuestionFrame.createLabel(creditsDescription,labelSize);
         if (imagePath != null){
-            ImageIcon image = QuestionFrame.getFixedDimensionImage(imagePath,0);
+            ImageIcon image = QuestionFrame.getFixedDimensionImage(imagePath,imageRatio);
             labelText.setIcon(image);
         }
         labelText.setHorizontalTextPosition(JLabel.CENTER);

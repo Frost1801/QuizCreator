@@ -1,19 +1,18 @@
 package quizComponents;
 
 
-import java.io.IOException;
+import java.io.*;
 
-import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Vector;
 
 public class TextInterpreter {
 
-    public void prepareTest (Quiz toPrepare) throws IOException {
-        Vector <String []> questionData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/questions.txt");
-        Vector <String []> answersData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/answers.txt");
-        String credits = readText("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/credits.txt");
-        Vector<String[]> resultsData = initializeData("/home/sergio/Git-Projects/quizCreator/quizComponents/TxtFiles/results.txt");
+    public void prepareTest (Quiz toPrepare, String questionsPath, String answersPath, String creditsPath, String resultsPath) throws IOException {
+        Vector <String []> questionData = initializeData(questionsPath);
+        Vector <String []> answersData = initializeData(answersPath);
+        String credits = readText(creditsPath);
+        Vector<String[]> resultsData = initializeData(resultsPath);
         toPrepare.setCredits(credits);
         createQuestions(questionData,toPrepare);
         createAnswers(answersData,toPrepare);
@@ -39,7 +38,7 @@ public class TextInterpreter {
     }
 
     //reads a text file
-    private String readText (String filePath) throws IOException {
+  private String readText (String filePath) throws IOException {
         //reads the text file
         FileReader rd = new FileReader(filePath);
         //components to fill all the file in a single string

@@ -24,13 +24,18 @@ public class GUI implements ActionListener {
     public GUI () throws IOException {
         initializeQuiz();
         createTitleWindow();
+
     }
 
     //static methods used for the mainframe
     private void initializeQuiz () throws IOException {
         TextInterpreter textInterpreter = new TextInterpreter();
         quiz = new Quiz();
-        textInterpreter.prepareTest(quiz);
+        String questionsPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/questions.txt";
+        String answersPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/answers.txt";
+        String creditsPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/credits.txt";
+        String resultsPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/results.txt";
+        textInterpreter.prepareTest(quiz, questionsPath,answersPath,creditsPath, resultsPath);
     }
 
     private void createConfirmationFrame (String question){
@@ -79,13 +84,13 @@ public class GUI implements ActionListener {
         backToMainMenu = TitleFrame.createGenericButton("Back to main menu");
         backToMainMenu.addActionListener(this);
         Result rs = quiz.getResult();
-        resultFrame = new ResultFrame(rs.getDescription(),rs.getImagePath(), backToMainMenu);
+        resultFrame = new ResultFrame(rs.getDescription(),rs.getImagePath(), backToMainMenu, rs.getType());
         resultFrame.setVisible(true);
     }
 
     private static double findRatio(int height, int windowHeight){
         int previous = height;
-        double ratio = 0.60;
+        double ratio = 0.50;
         int desiredHeight = (int) (windowHeight * ratio);
         while (height > desiredHeight)
             height *= ratio;
@@ -140,7 +145,7 @@ public class GUI implements ActionListener {
         Answer ans;
         for (int i = 0; i < numberOfAnswers; i++) {
             ans = quiz.getAnswer(questionIndex,i);
-            questionFrame.addAnswer(ans.getDescription(), options, false);
+            questionFrame.addAnswer(ans.getDescription(), options);
         }
         updateAnswerColor();
         addOptionsActionListener();

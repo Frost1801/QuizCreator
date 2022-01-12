@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
-import javax.swing.plaf.ProgressBarUI;
-import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.util.Vector;
 
@@ -16,8 +14,8 @@ import static GUI.GUI.fitPicToFrame;
 
 public class QuestionFrame extends JFrame {
 
-    public static final int WINDOW_HEIGHT = 700;
-    public static final int WINDOW_WIDTH = 700;
+    public static final int WINDOW_HEIGHT = 900;
+    public static final int WINDOW_WIDTH = 900;
 
     public QuestionFrame(String title, int maxValue, JButton goRight, JButton goLeft){
         questionFrame = createMainFrame(title);
@@ -87,7 +85,7 @@ public class QuestionFrame extends JFrame {
     }
 
     public static void addQuestion(String questionText, JPanel destination){
-        JLabel lbl = createLabel(questionText);
+        JLabel lbl = createLabel(questionText,0);
         lbl.setForeground(new Color(23, 29, 34));
         JPanel tmp = new JPanel();
         tmp.setLayout(new BorderLayout(10,10));
@@ -99,11 +97,30 @@ public class QuestionFrame extends JFrame {
         destination.add(tmp,BorderLayout.NORTH);
     }
 
-    public static JLabel createLabel (String text){
+    private  static int getRightTextSize (String text){
+        int length = text.length();
+        if (length > 225){
+            return 15;
+        }
+        else if (length > 150){
+            return 20;
+        }
+        else  if (length > 100 )
+            return 25;
+        else if (length > 70)
+            return 30;
+        else {
+            return 50;
+        }
+    }
+
+    public static JLabel createLabel (String text, int size){
         JLabel toReturn = new JLabel(addHTML(text));
         toReturn.setHorizontalAlignment(JLabel.CENTER);
         toReturn.setVerticalAlignment(JLabel.TOP);
-        toReturn.setFont(new Font("Dialog",Font.BOLD,30));
+        if (size == 0)
+            size = getRightTextSize (text);
+        toReturn.setFont(new Font("Dialog",Font.BOLD,size));
         return toReturn;
     }
 
@@ -172,7 +189,7 @@ public class QuestionFrame extends JFrame {
     }
 
 
-    public void addAnswer (String description, Vector<JButton> options, boolean isSelected){
+    public void addAnswer (String description, Vector<JButton> options){
             JButton answer;
             answer = new JButton();
             answer.setText(addHTML(description));
