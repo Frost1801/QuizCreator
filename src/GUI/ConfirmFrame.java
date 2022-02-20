@@ -36,7 +36,7 @@ public class ConfirmFrame {
     public static JButton createButton(String text){
         JButton toCreate = new JButton();
         toCreate.setText(addHTML(text));
-        toCreate.setFont(new Font("Dialog",Font.BOLD,30));
+        toCreate.setFont(new Font("Dialog",Font.BOLD,15));
         toCreate.setFocusable(false);
         return toCreate;
     }

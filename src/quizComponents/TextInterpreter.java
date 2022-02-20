@@ -1,17 +1,18 @@
 package quizComponents;
 
-
 import java.io.*;
 
 import java.util.Arrays;
 import java.util.Vector;
 
+
 public class TextInterpreter {
 
     public void prepareTest (Quiz toPrepare, String questionsPath, String answersPath, String creditsPath, String resultsPath) throws IOException {
+        MyReader rd = new MyReader();
         Vector <String []> questionData = initializeData(questionsPath);
         Vector <String []> answersData = initializeData(answersPath);
-        String credits = readText(creditsPath);
+        String credits = rd.readTxtFile(creditsPath);
         Vector<String[]> resultsData = initializeData(resultsPath);
         toPrepare.setCredits(credits);
         createQuestions(questionData,toPrepare);
@@ -20,7 +21,8 @@ public class TextInterpreter {
     }
     //reads and formats the text file to extract data more easily
     private Vector<String []> initializeData(String filePath) throws IOException{
-       String combinedElements = readText(filePath);
+        MyReader rd = new MyReader();
+       String combinedElements = rd.readTxtFile(filePath);
         //remove spaces and newlines
         String answersNoSpaces = combinedElements.replaceAll("[\n\r]", "");
 
@@ -37,19 +39,6 @@ public class TextInterpreter {
         return separatedLines;
     }
 
-    //reads a text file
-  private String readText (String filePath) throws IOException {
-        //reads the text file
-        FileReader rd = new FileReader(filePath);
-        //components to fill all the file in a single string
-        int charStream;
-        StringBuilder combinedElements = new StringBuilder();
-        while ((charStream = rd.read())!= -1){ //creates a string with the characters of the file
-            combinedElements.append((char)charStream);
-        }
-        return combinedElements.toString();
-    }
-
     //creates the answers based on the input file converted into strings
     private void createAnswers (Vector<String []> answerData, Quiz quiz){
         for (int i = 0; i< answerData.size(); i++) {
@@ -64,13 +53,18 @@ public class TextInterpreter {
                 Answer answerToPush;
 
                 switch (opCode) {
-                    case "DES" -> {
+                    case "DES" : {
                         answerToPush = new Answer(value);
                         quiz.addAnswer(i, answerToPush);
+                        break;
                     }
-                    case "TYP" -> {
+                    case "TYP" : {
                         quiz.setAnswerType(i,counter,value);
                         counter ++;
+                        break;
+                    }
+                    default:{
+                        throw (new IllegalArgumentException("Invalid argument in answers file"));
                     }
                 }
             }
@@ -92,9 +86,17 @@ public class TextInterpreter {
                 //value is everything after the =
                 String value = element.substring(element.lastIndexOf("=" )+ 1);
                 switch (opCode) {
-                    case "DES" -> description = value;
-                    case "IMG" -> image = value;
-                    default -> throw (new UnsupportedOperationException("Invalid string opcode" + element));
+                    case "DES" : {
+                        description = value;
+                        break;
+                    }
+                    case "IMG" : {
+                        image = value;
+                        break;
+                    }
+                    default :{
+                        throw (new UnsupportedOperationException("Invalid string opcode" + element));
+                    }
                 }
             }
             quiz.addQuestion(new Question(n,description,image));
@@ -115,10 +117,21 @@ public class TextInterpreter {
                 //value is everything after the =
                 String value = element.substring(element.lastIndexOf("=" )+ 1);
                 switch (opCode) {
-                    case "DES" -> description = value;
-                    case "TYP" -> type = value;
-                    case "IMG" -> image = value;
-                    default -> throw (new UnsupportedOperationException("Invalid string opcode" + element));
+                    case "DES" :{
+                        description = value;
+                        break;
+                    }
+                    case "TYP" : {
+                        type = value;
+                        break;
+                    }
+                    case "IMG" : {
+                        image = value;
+                        break;
+                    }
+                    default :{
+                        throw (new UnsupportedOperationException("Invalid string opcode" + element));
+                    }
                 }
             }
             //adds the result to the quiz list of possible results

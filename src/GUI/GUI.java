@@ -1,9 +1,6 @@
 package GUI;
 
-import quizComponents.Answer;
-import quizComponents.Quiz;
-import quizComponents.Result;
-import quizComponents.TextInterpreter;
+import quizComponents.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,10 +28,10 @@ public class GUI implements ActionListener {
     private void initializeQuiz () throws IOException {
         TextInterpreter textInterpreter = new TextInterpreter();
         quiz = new Quiz();
-        String questionsPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/questions.txt";
-        String answersPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/answers.txt";
-        String creditsPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/credits.txt";
-        String resultsPath = "/home/sergio/Git-Projects/quizCreator/src/quizFiles/TxtFiles/results.txt";
+        String questionsPath = "/res/TxtFiles/questions.txt";
+        String answersPath = "/res/TxtFiles/answers.txt";
+        String creditsPath = "/res/TxtFiles/credits.txt";
+        String resultsPath = "/res/TxtFiles/results.txt";
         textInterpreter.prepareTest(quiz, questionsPath,answersPath,creditsPath, resultsPath);
     }
 
@@ -101,12 +98,8 @@ public class GUI implements ActionListener {
         JLabel tmp = new JLabel();
         int width;
         int height;
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(new File(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MyReader rd = new MyReader();
+        BufferedImage img = rd.readImage(path);
         assert img != null;
 
         width = img.getWidth();

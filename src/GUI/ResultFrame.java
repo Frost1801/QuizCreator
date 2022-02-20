@@ -11,16 +11,24 @@ public class ResultFrame {
         int size = 0;
 
         switch (result){
-            case "adran" -> {
+            case "adran" :  {
                 ratio = 0.25;
                 size = 20;
+                break;
             }
-            case "oryn" ->{
+            case "oryn" : {
                 ratio = 0.125;
                 size = 20;
+                break;
             }
-            case "knork" -> ratio = 0.75;
-            case "kairon" -> ratio = 1;
+            case "knork" : {
+                ratio = 0.75;
+                break;
+            }
+            case "kairon" :{
+                ratio = 1;
+                break;
+            }
         }
 
         CreditsFrame.createStandardFrame(resultFrame,"You got: " + result, description,backToMenu,path,size,ratio);

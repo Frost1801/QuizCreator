@@ -1,10 +1,13 @@
 package GUI;
 
+import quizComponents.MyReader;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 
@@ -100,7 +103,7 @@ public class QuestionFrame extends JFrame {
     private  static int getRightTextSize (String text){
         int length = text.length();
         if (length > 225){
-            return 15;
+            return 20;
         }
         else if (length > 150){
             return 20;
@@ -127,7 +130,10 @@ public class QuestionFrame extends JFrame {
     public static ImageIcon getFixedDimensionImage (String path, double ratio){
         JLabel tmp = fitPicToFrame(path, WINDOW_HEIGHT,ratio);
         //image inserted
-        return new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(tmp.getWidth(), tmp.getHeight(), Image.SCALE_DEFAULT));
+        MyReader rd = new MyReader();
+        BufferedImage bufferedImage = rd.readImage(path);
+        ImageIcon img = new ImageIcon(new ImageIcon(bufferedImage).getImage().getScaledInstance(tmp.getWidth(), tmp.getHeight(), Image.SCALE_DEFAULT));
+        return img;
     }
 
     public static void addImageToPanel(String path, JPanel destination){
@@ -159,13 +165,13 @@ public class QuestionFrame extends JFrame {
     }
 
     public void createGoRight (JButton goRight){
-        String rightPath = "/home/sergio/Git-Projects/quizCreator/ImmaginiGUI/Right-arrow.png";
+        String rightPath = "/res/GUI_images/Right-arrow.png";
         addImageToButton(rightPath,goRight,0.125);
         goRight.setFocusable(false);
     }
     public void addMoveButtons (JButton goRight, JButton goLeft){
 
-        String leftPath = "/home/sergio/Git-Projects/quizCreator/ImmaginiGUI/Left-arrow.png";
+        String leftPath = "/res/GUI_images/Left-arrow.png";
         addImageToButton(leftPath,goLeft,0.125);
         goLeft.setFocusable(false);
 
